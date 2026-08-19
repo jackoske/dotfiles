@@ -1,14 +1,13 @@
 return {
-	{
-		"Mofiqul/dracula.nvim",
-		opts = {
-			transparent_bg = true,
-		},
-	},
-	{
-		"LazyVim/LazyVim",
-		opts = {
-			colorscheme = "dracula",
-		},
-	},
+  {
+    "catppuccin/nvim",
+    name = "catppuccin",
+    priority = 1000,
+  },
+  {
+    "LazyVim/LazyVim",
+    opts = {
+      colorscheme = "catppuccin-nvim",
+    },
+  },
 }

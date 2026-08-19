@@ -2,6 +2,7 @@
   "version": 2,
   "enabled": true,
   "ui": {
+    "width": 28,
     "panel_initial_state": "expanded",
     "provider_initial_state": "collapsed"
   },
@@ -12,6 +13,11 @@
     "stale_after_ms": 600000
   },
   "providers": {
-    "openai": {}
+    "openai": {
+      "credential": {
+        "source": "opencode",
+        "entry": "openai"
+      }
+    }
   }
 }

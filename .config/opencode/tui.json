@@ -2,6 +2,6 @@
   "$schema": "https://opencode.ai/tui.json",
   "theme": "system",
   "plugin": [
-    "opencode-usage-monitor@latest"
+    "file:///home/phantom/.config/opencode/plugins/usage-monitor/tui.js"
   ]
 }

@@ -1,3 +1,4 @@
+@import "/usr/lib/hyprwhspr/config/waybar/hyprwhspr-style.css";
 @import "../omarchy/current/theme/waybar.css";
 
 * {
@@ -126,4 +127,15 @@ tooltip {
   min-width: 22px;
   min-height: 22px;
   animation: gengar-walk 2s steps(20) infinite;
+}
+
+#custom-weather {
+  margin-left: 7.5px;
+  margin-right: 7.5px;
+}
+
+#custom-weather.unavailable {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
 }
