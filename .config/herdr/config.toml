@@ -2,3 +2,6 @@
 # Use Ctrl-S as Herdr's prefix key instead of zsh's forward history search.
 prefix = "ctrl+s"
 toggle_sidebar = "prefix+b"
+
+[ui]
+sidebar_start_collapsed = true
