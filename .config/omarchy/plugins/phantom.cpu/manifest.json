@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "id": "phantom.cpu",
+  "name": "CPU usage",
+  "version": "1.0.0",
+  "author": "Phantom",
+  "description": "Shows current CPU usage",
+  "kinds": ["bar-widget"],
+  "entryPoints": {"barWidget": "Cpu.qml"},
+  "barWidget": {
+    "displayName": "CPU usage",
+    "description": "Shows current CPU usage and opens btop",
+    "category": "System",
+    "allowMultiple": false
+  }
+}

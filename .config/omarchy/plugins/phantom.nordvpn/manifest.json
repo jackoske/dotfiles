@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "id": "phantom.nordvpn",
+  "name": "NordVPN status",
+  "version": "1.0.0",
+  "author": "Phantom",
+  "description": "Shows NordVPN connection status",
+  "kinds": ["bar-widget"],
+  "entryPoints": {"barWidget": "NordVPN.qml"},
+  "barWidget": {
+    "displayName": "NordVPN status",
+    "description": "Shows whether NordVPN is connected",
+    "category": "Network",
+    "allowMultiple": false
+  }
+}

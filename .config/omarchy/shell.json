@@ -1,0 +1,84 @@
+{
+  "version": 1,
+  "idle": {
+    "screensaver": 150,
+    "lock": 300
+  },
+  "bar": {
+    "position": "top",
+    "transparent": true,
+    "centerAnchor": "phantom.clock",
+    "layout": {
+      "left": [
+        {
+          "id": "phantom.menu"
+        },
+        {
+          "id": "omarchy.workspaces"
+        }
+      ],
+      "center": [
+        {
+          "id": "phantom.clock",
+          "format": "HH:mm",
+          "formatAlt": "HH:mm",
+          "verticalFormat": "HH\n—\nmm"
+        },
+        {
+          "id": "omarchy.indicators"
+        },
+        {
+          "id": "omarchy.system-update"
+        },
+        {
+          "id": "omarchy.keyboard-layout"
+        },
+        {
+          "id": "omarchy.weather"
+        }
+      ],
+      "right": [
+        {
+          "id": "omarchy.tray"
+        },
+        {
+          "id": "omarchy.agents"
+        },
+        {
+          "id": "omarchy.microphone"
+        },
+        {
+          "id": "omarchy.bluetooth"
+        },
+        {
+          "id": "omarchy.network"
+        },
+        {
+          "id": "omarchy.audio"
+        },
+        {
+          "id": "omarchy.monitor"
+        },
+        {
+          "id": "phantom.nordvpn"
+        },
+        {
+          "id": "phantom.cpu"
+        },
+        {
+          "id": "omarchy.power",
+          "settings": {
+            "showPercentage": true
+          }
+        }
+      ]
+    }
+  },
+  "plugins": [],
+  "disabledPlugins": [
+    "omarchy.menu"
+  ],
+  "cloneSourceRestores": [
+    "phantom.menu"
+  ]
+}
