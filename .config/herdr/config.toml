@@ -5,3 +5,10 @@ toggle_sidebar = "prefix+b"
 
 [ui]
 sidebar_start_collapsed = true
+tab_bar_position = "bottom"
+tab_bar_right_separator = "  |  "
+tab_bar_right = [
+  { type = "hostname" },
+  { type = "datetime", format = "%H:%M" },
+  { type = "command", command = "sh ~/.config/herdr/status.sh", interval_seconds = 5, timeout_seconds = 2 },
+]
