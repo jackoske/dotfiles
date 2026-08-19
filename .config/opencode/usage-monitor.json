@@ -1,0 +1,17 @@
+{
+  "version": 2,
+  "enabled": true,
+  "ui": {
+    "panel_initial_state": "expanded",
+    "provider_initial_state": "collapsed"
+  },
+  "refresh": {
+    "mode": "automatic",
+    "interval_ms": 300000,
+    "timeout_ms": 15000,
+    "stale_after_ms": 600000
+  },
+  "providers": {
+    "openai": {}
+  }
+}
