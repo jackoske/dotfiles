@@ -83,9 +83,32 @@ where orchestration costs more than execution. Do not parallelize conflicting
 writes to the same file; serialize, refine ownership, or make one task
 read-only.
 
-Prefer sibling panes for one or two related children, tabs for several
-independent streams, and separate workspaces only for genuine isolation or
-another checkout. Fan out early, but do not create redundant agents.
+Prefer sibling panes for one or two related children, a deliberate grid for
+three or four, tabs for larger independent fan-outs, and separate workspaces
+only for genuine isolation or another checkout. Fan out early, but do not
+create redundant agents.
+
+### Pane layout rules
+
+Pane layout is part of orchestration, not an accidental side effect of agent
+creation. Before splitting, record the current pane as `root`. For a 2x2
+layout, split explicit pane IDs rather than repeatedly splitting `--current`:
+
+```text
+root --right--> right_top
+root --down---> left_bottom
+right_top --down--> right_bottom
+```
+
+Keep `root` focused for the Gardener and start children in the returned pane
+IDs. This produces a predictable layout and avoids the common failure mode of
+three nested panes on one side and one full-height pane on the other. If the
+number of children does not fit cleanly, prefer a tab over increasingly thin
+panes.
+
+Every split creates an owned resource immediately. If agent startup fails,
+startup returns no agent, or a pane is not needed after decomposition, close
+that pane before continuing. Never leave an unassigned shell pane behind.
 
 ## Agent creation and ownership
 
@@ -124,13 +147,18 @@ Return:
 - integration notes for the Gardener
 ```
 
-Create and start children without focusing them. Parse each split response:
+Create and start children without focusing them. Parse each split response and
+retain the returned pane ID; do not infer pane IDs from position:
 
 ```bash
 herdr pane split --current --direction right --cwd "$PWD" --no-focus
 herdr agent start api-review --kind opencode --pane <returned-pane-id> -- --agent specialist --auto
 herdr agent prompt api-review "<specific prompt>"
 ```
+
+For multiple children, target the saved IDs explicitly. Do not issue several
+`herdr pane split --current` commands, because the focused pane may be the
+newly created child and produce an unbalanced nested layout.
 
 The `--auto` example is valid only after capability discovery confirms it;
 otherwise omit it or use the installed equivalent. Start all independent
@@ -144,16 +172,26 @@ Continuously supervise active children with the installed equivalents of:
 herdr agent list
 herdr agent get <name>
 herdr agent read <name>
-herdr agent wait <name> --until done --timeout 120000
+herdr agent wait <name> --until done
 ```
+
+`agent wait` is an event-driven state wait; `--timeout` is optional and is
+only a bounded safety policy for the Gardener. Omitting it waits indefinitely,
+so never use an arbitrary polling timeout as the completion condition. The
+wait observes the agent lifecycle, not a particular prompt turn. A child is
+not complete merely because a wait returned: read its report and reconcile
+the recorded completion criteria. Use `--until blocked` when deliberately
+waiting for input, and handle `unknown` or a timeout as supervision failures,
+not as successful completion.
 
 A pane existing or becoming quiet does not prove completion. For every child,
 determine `done`, `blocked`, `failed`, `stalled`, or `terminated`. If blocked
 or stalled, read its output, identify whether it is waiting, confused, or
 dead, then correct the prompt, retry a transient issue, or replace it. Preserve
-useful findings and avoid infinite retries. If `--until` is unsupported, poll
-`get`/`list` and handle every state explicitly; the default wait target may
-include `idle` and return before the child is actually done.
+useful findings and avoid infinite retries. If `--until` is unsupported, use
+the installed event/state subscription equivalent or poll `get`/`list` only
+as a compatibility fallback. Do not treat quiet output, an existing pane, or
+an `idle` state as a collected report.
 
 Parallelism may grow during the run. Spawn a follow-up when a child discovers
 a separable subproblem, a blocker can be investigated independently, tests
@@ -189,14 +227,20 @@ terminate children → clean resources → report
 Before reporting completion, the Gardener MUST:
 
 1. ensure every child is terminal and retrieve required output;
-2. terminate any child still alive using the supported Herdr termination
-   mechanism (inspect help rather than assuming pane closure kills it). If no
-   agent-termination command exists, send the canonical interrupt through the
-   agent/pane, re-check `get`/`list` until it is terminal, and only then close
-   the owned pane; report inability to terminate rather than killing blindly;
-3. close only panes, tabs, or workspaces created by this run when no longer
-   needed; and
-4. verify no orphan agent/process from this run remains.
+2. after the report is collected, terminate any child still alive using the
+   supported Herdr termination mechanism (inspect help rather than assuming
+   pane closure kills it). Herdr 0.8 exposes no separate agent-terminate
+   command: send the canonical interrupt through the named agent/pane, then
+   re-check `get`/`list` until it is terminal;
+3. release lifecycle authority with `herdr pane release-agent <pane_id>
+   --source <source> --agent <label>` when the integration still owns the
+   pane, then close only the owned pane with `herdr pane close <pane_id>`;
+4. verify no orphan agent/process from this run remains. `release-agent` does
+   not close a pane, and a `done` agent does not imply automatic pane cleanup.
+
+Use the exact recorded pane IDs and ownership registry for cleanup. Never
+close a pane merely because it is done, and never close a pane or process
+that predates the current run.
 
 If graceful termination fails, inspect the process and escalate only against
 that owned resource. Never kill unrelated processes. If cleanup cannot be
@@ -219,13 +263,14 @@ herdr agent --help
 herdr pane --help
 opencode --help
 
-# 3. Create three owned sibling panes without stealing focus.
+# 3. Create three owned child panes as a predictable 2x2 layout.
+# Save the current pane as root, then target returned IDs explicitly.
 herdr pane split --current --direction right --cwd "$PWD" --no-focus
-# response => pane_id=w7:p2
-herdr pane split --current --direction right --cwd "$PWD" --no-focus
-# response => pane_id=w7:p3
-herdr pane split --current --direction right --cwd "$PWD" --no-focus
-# response => pane_id=w7:p4
+# response => pane_id=w7:p2 (right_top)
+herdr pane split --pane w7:p1 --direction down --cwd "$PWD" --no-focus
+# response => pane_id=w7:p3 (left_bottom)
+herdr pane split --pane w7:p2 --direction down --cwd "$PWD" --no-focus
+# response => pane_id=w7:p4 (right_bottom)
 
 # 4. Start independent children in parallel. Add --auto only if help confirmed it.
 herdr agent start search-api --kind opencode --pane w7:p2 -- --agent specialist --auto
