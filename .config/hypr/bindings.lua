@@ -74,3 +74,6 @@ o.bind("SUPER + CTRL + LEFT", "Move window to previous workspace", hl.dsp.window
 
 -- Speech-to-text
 o.bind("SUPER + ALT + D", "Speech-to-text", "/usr/lib/hyprwhspr/config/hyprland/hyprwhspr-tray.sh record")
+
+-- Searchable clipboard history
+o.bind("ALT + V", "Paste history", "omarchy-shell shell toggle omarchy.clipboard")

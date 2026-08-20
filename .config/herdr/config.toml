@@ -1,3 +1,4 @@
+onboarding = false
 [keys]
 # Use Ctrl-S as Herdr's prefix key instead of zsh's forward history search.
 prefix = "ctrl+s"
@@ -12,3 +13,4 @@ tab_bar_right = [
   { type = "datetime", format = "%H:%M" },
   { type = "command", command = "sh ~/.config/herdr/status.sh", interval_seconds = 5, timeout_seconds = 2 },
 ]
+show_agent_labels_on_pane_borders = true

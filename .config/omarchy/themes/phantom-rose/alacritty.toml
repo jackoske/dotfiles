@@ -1,0 +1,59 @@
+# Phantom Rose theme for Alacritty
+# Pink background, green highlights, white foreground
+
+[colors.primary]
+background = "#640a28"
+foreground = "#f8f8f2"
+bright_foreground = "#ffffff"
+
+[colors.cursor]
+text = "#640a28"
+cursor = "#f8f8f2"
+
+[colors.vi_mode_cursor]
+text = "CellBackground"
+cursor = "CellForeground"
+
+[colors.selection]
+text = "CellForeground"
+background = "#8c1535"
+
+[colors.normal]
+black = "#3d0515"
+red = "#ff5555"
+green = "#50fa7b"
+yellow = "#f1fa8c"
+blue = "#bd93f9"
+magenta = "#ff79c6"
+cyan = "#8be9fd"
+white = "#f8f8f2"
+
+[colors.bright]
+black = "#8c1535"
+red = "#ff6e6e"
+green = "#69ff94"
+yellow = "#ffffa5"
+blue = "#d6acff"
+magenta = "#ff92df"
+cyan = "#a4ffff"
+white = "#ffffff"
+
+[colors.search.matches]
+foreground = "#640a28"
+background = "#50fa7b"
+
+[colors.search.focused_match]
+foreground = "#640a28"
+background = "#f1fa8c"
+
+[colors.footer_bar]
+background = "#640a28"
+foreground = "#f8f8f2"
+
+[colors.hints.start]
+foreground = "#640a28"
+background = "#f1fa8c"
+
+[colors.hints.end]
+foreground = "#f1fa8c"
+background = "#640a28"

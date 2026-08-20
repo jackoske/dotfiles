@@ -1,0 +1,9 @@
+{
+  // Keep "screenshot" routed to the actual screenshot action, not its parent menu.
+  "trigger.capture": {
+    "aliases": ["capture", "screenrecord", "screen-record", "screenrecording"]
+  },
+  "trigger.capture.screenshot": {
+    "aliases": ["screenshot"]
+  }
+}
