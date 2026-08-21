@@ -44,6 +44,13 @@ for every owned child. Classify each child as `working`, `reportable`,
 be reconciled as such. Read and preserve the final report before integration
 or cleanup.
 
+The Herdr OpenCode integration forwards each completed assistant message to
+`pane.report_agent` in the API `message` field. Treat a child as `reportable`
+only after `herdr agent get <name>` or the API snapshot exposes that message
+and the child is idle/terminal; the message is an optimization for collection,
+not proof of termination. Preserve it verbatim, then perform the normal
+list/get/read lifecycle check before cleanup.
+
 For work with the following dependency shape, serialize it explicitly:
 `backend || analysis` (parallel, disjoint ownership) → ingestion wiring (the
 Gardener) → UI contract → React Flow rebuild (sequential shared-component

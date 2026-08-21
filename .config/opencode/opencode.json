@@ -58,6 +58,7 @@
   "plugin": [
     "opencode-usage-monitor@2.0.1",
     "envsitter-guard@0.0.4",
-    "opencode-telemetry@0.1.19"
+    "opencode-telemetry@0.1.19",
+    "file:///home/phantom/.config/opencode/plugins/herdr-final-report.js"
   ]
 }
