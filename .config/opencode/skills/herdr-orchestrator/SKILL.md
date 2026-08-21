@@ -110,14 +110,9 @@ panes.
 
 #### Reuse before split
 
-Before splitting or starting a new child, inspect the recorded layout and agent
-registry for an available pane that is released, idle, or otherwise safely
-reusable. Reuse it when it satisfies the new scope without conflicting
-ownership, and record the reuse decision. Create a new pane only when no
-suitable pane exists, isolation is required, or the approved design explicitly
-requires additional layout. A completed child pane is not automatically
-disposable: release its lifecycle authority and keep it available for a later
-child when safe.
+Before splitting, check whether the approved next phase explicitly calls for a
+released pane to be reused. Reuse it only when it has no live owner and its
+scope is safe. Otherwise create the required pane and close it after cleanup.
 
 Every split creates an owned resource immediately. If agent startup fails,
 startup returns no agent, or a pane is not needed after decomposition, close
@@ -271,21 +266,27 @@ Before reporting completion, the Gardener MUST:
 2. after the report is collected, terminate any child still alive with the
    canonical interrupt syntax (`herdr agent send-keys <name> C-c`), then
    re-check `herdr agent get/list` until that named child disappears or is
-   explicitly terminal. Do not send an unrecognised `ctrl-c` token;
-3. once the child is no longer alive, release lifecycle authority when
-   required with `herdr pane release-agent <pane_id> --source <source>
-   --agent <label>`. Preserve the released pane for safe reuse by default.
-   Close a pane only when it is an unassigned shell, unsafe/orphaned,
-   explicitly no longer useful, required to restore the pre-run layout, or
-   explicitly requested by the user. Record the reason for every closure and
-   every intentionally retained pane;
+   explicitly terminal. Do not send an unrecognised `ctrl-c` token. Never
+   target the root agent or root pane;
+3. once the child is no longer alive, release lifecycle authority with the
+   exact recorded pane ID when required:
+   `herdr pane release-agent <pane_id> --source <source> --agent <label>`.
+   For panes created by this run, close the exact child pane by default after
+   release with `herdr pane close <pane_id>`. Do not close the pane while a
+   child is still live, and do not close the root or any pre-existing pane.
+   Retain a released child pane only when the registry records an explicit
+   reuse/retention reason. Record the reason for every closure and every
+   intentionally retained pane;
 4. verify no live or orphan agent/process from this run remains and that the
    layout is accounted for. Restore the recorded root focus. Never close a
    pre-existing pane.
 
-Use the exact recorded pane IDs and ownership registry for cleanup. Never
-close a pane merely because it is done, and never close a pane or process
-that predates the current run.
+Use the exact recorded pane IDs and ownership registry for cleanup. Before
+closing, confirm the target is a created child pane, the child is
+terminal/disappeared, and the recorded root pane ID is different. Never close
+a pane or process that predates the current run. If the pane identity is
+uncertain, retain it and report the blocker rather than risking the root
+OpenCode process.
 
 If graceful termination fails, inspect the process and escalate only against
 that owned resource, using a bounded timeout and only a canonical Herdr
@@ -342,8 +343,8 @@ herdr agent prompt search-review "Read-only review of the integrated search chan
 herdr agent get search-review
 herdr agent read search-review
 
-# 7. The Gardener runs final checks, releases child authority, and retains
-# reusable panes. Close only panes meeting the documented closure criteria.
+# 7. The Gardener runs final checks, releases child authority, and closes
+# completed child panes. Retain a pane only for an explicitly planned reuse.
 herdr agent --help
 herdr pane --help
 herdr agent list
@@ -352,8 +353,8 @@ herdr agent list
 The commands above illustrate fan-out; in a real run, replace placeholder
 flags and lifecycle commands with the syntax actually discovered. The
 Gardener integrates the three reports, addresses review findings, runs final
-verification itself, releases child authority, retains reusable panes, and
-confirms the original pane remains focused.
+verification itself, releases child authority, closes completed child panes,
+and confirms the original pane remains focused.
 
 ## Completion checklist
 
@@ -368,6 +369,7 @@ Before claiming completion, confirm:
 - [ ] Dynamic follow-ups/replacements were considered.
 - [ ] Results and conflicts were reconciled.
 - [ ] The Gardener performed final verification.
-- [ ] Every created child/resource was terminated or intentionally retained
-      with a reason; pre-existing resources were not touched.
+- [ ] Every created child/resource was terminated and its pane closed, or
+      intentionally retained with a reason; pre-existing resources were not
+      touched.
 - [ ] No orphan processes remain and the user's pane is still focused.
