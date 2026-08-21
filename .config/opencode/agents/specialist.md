@@ -1,6 +1,8 @@
 ---
 description: Executes one narrow, well-scoped task delegated by the Gardener and reports evidence.
 mode: subagent
+model: openai/gpt-5.6-luna
+variant: medium
 color: "#2563EB"
 ---
 

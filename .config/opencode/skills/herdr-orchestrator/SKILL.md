@@ -153,6 +153,9 @@ retain the returned pane ID; do not infer pane IDs from position:
 ```bash
 herdr pane split --current --direction right --cwd "$PWD" --no-focus
 herdr agent start api-review --kind opencode --pane <returned-pane-id> -- --agent specialist --auto
+# Wait until the start response (or `herdr agent get`) reports
+# `interactive_ready:true`; do not prompt a pane that is still booting.
+herdr agent get api-review
 herdr agent prompt api-review "<specific prompt>"
 ```
 
@@ -172,17 +175,16 @@ Continuously supervise active children with the installed equivalents of:
 herdr agent list
 herdr agent get <name>
 herdr agent read <name>
-herdr agent wait <name> --until done
 ```
 
-`agent wait` is an event-driven state wait; `--timeout` is optional and is
-only a bounded safety policy for the Gardener. Omitting it waits indefinitely,
-so never use an arbitrary polling timeout as the completion condition. The
-wait observes the agent lifecycle, not a particular prompt turn. A child is
-not complete merely because a wait returned: read its report and reconcile
-the recorded completion criteria. Use `--until blocked` when deliberately
-waiting for input, and handle `unknown` or a timeout as supervision failures,
-not as successful completion.
+Do not use `herdr agent wait --until done` as the normal completion mechanism
+for interactive OpenCode children. They commonly finish their requested turn
+by becoming `idle`, while the Herdr lifecycle remains attached to the pane;
+waiting for `done` can therefore block forever. Completion is a supervised
+protocol: read the terminal output, inspect `get`/`list`, and decide whether
+the child is reportable (`idle` with a final report), blocked, failed, or still
+working. A bounded wait may be used only as a diagnostic safety timeout, never
+as proof of completion.
 
 A pane existing or becoming quiet does not prove completion. For every child,
 determine `done`, `blocked`, `failed`, `stalled`, or `terminated`. If blocked
@@ -226,17 +228,19 @@ terminate children → clean resources → report
 
 Before reporting completion, the Gardener MUST:
 
-1. ensure every child is terminal and retrieve required output;
-2. after the report is collected, terminate any child still alive using the
-   supported Herdr termination mechanism (inspect help rather than assuming
-   pane closure kills it). Herdr 0.8 exposes no separate agent-terminate
-   command: send the canonical interrupt through the named agent/pane, then
-   re-check `get`/`list` until it is terminal;
-3. release lifecycle authority with `herdr pane release-agent <pane_id>
-   --source <source> --agent <label>` when the integration still owns the
-   pane, then close only the owned pane with `herdr pane close <pane_id>`;
-4. verify no orphan agent/process from this run remains. `release-agent` does
-   not close a pane, and a `done` agent does not imply automatic pane cleanup.
+1. retrieve and preserve every child report before termination;
+2. after the report is collected, terminate any child still alive with the
+   canonical interrupt syntax (`herdr agent send-keys <name> C-c`), then
+   re-check `herdr agent get/list` until that named child disappears or is
+   explicitly terminal. Do not send an unrecognised `ctrl-c` token;
+3. once the child is no longer alive, release lifecycle authority when
+   required with `herdr pane release-agent <pane_id> --source <source>
+   --agent <label>`, then close the exact owned pane with
+   `herdr pane close <pane_id>`. Pane closure is the final cleanup action and
+   is expected to kill the pane's OpenCode process; it is safe only after the
+   report is collected and the pane ID is confirmed to belong to this run;
+4. verify no orphan agent/process from this run remains and that the original
+   root pane is still focused. Never close a pre-existing pane.
 
 Use the exact recorded pane IDs and ownership registry for cleanup. Never
 close a pane merely because it is done, and never close a pane or process
