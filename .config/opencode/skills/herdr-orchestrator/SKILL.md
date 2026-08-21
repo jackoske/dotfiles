@@ -91,7 +91,9 @@ create redundant agents.
 ### Pane layout rules
 
 Pane layout is part of orchestration, not an accidental side effect of agent
-creation. Before splitting, record the current pane as `root`. For a 2x2
+creation. Before splitting, record `herdr pane current`, `herdr pane layout`,
+and `herdr agent list` as the pre-run baseline; record the current pane as
+`root`. For a 2x2
 layout, split explicit pane IDs rather than repeatedly splitting `--current`:
 
 ```text
@@ -106,9 +108,22 @@ three nested panes on one side and one full-height pane on the other. If the
 number of children does not fit cleanly, prefer a tab over increasingly thin
 panes.
 
+#### Reuse before split
+
+Before splitting or starting a new child, inspect the recorded layout and agent
+registry for an available pane that is released, idle, or otherwise safely
+reusable. Reuse it when it satisfies the new scope without conflicting
+ownership, and record the reuse decision. Create a new pane only when no
+suitable pane exists, isolation is required, or the approved design explicitly
+requires additional layout. A completed child pane is not automatically
+disposable: release its lifecycle authority and keep it available for a later
+child when safe.
+
 Every split creates an owned resource immediately. If agent startup fails,
 startup returns no agent, or a pane is not needed after decomposition, close
-that pane before continuing. Never leave an unassigned shell pane behind.
+that newly created pane only when it cannot be safely retained or reused. Any
+retained pane must have an explicit registry entry, ownership/state record, and
+retention reason; never leave an unassigned shell pane behind.
 
 ## Agent creation and ownership
 
@@ -195,13 +210,37 @@ the installed event/state subscription equivalent or poll `get`/`list` only
 as a compatibility fallback. Do not treat quiet output, an existing pane, or
 an `idle` state as a collected report.
 
-Parallelism may grow during the run. Spawn a follow-up when a child discovers
-a separable subproblem, a blocker can be investigated independently, tests
-reveal an unrelated defect, or an independent verification is useful. Keep the
+Parallelism may grow during the run. Assign a follow-up to a safely released
+pane before splitting a new one. Spawn a follow-up when a child discovers a
+separable subproblem, a blocker can be investigated independently, tests reveal
+an unrelated defect, or an independent verification is useful. Keep the
 Gardener as the sole top-level coordinator and avoid uncontrolled recursion.
 
 Do not wait on one child while unrelated children can make progress. Poll or
 inspect whichever finishes first, and serialize only actual dependency chains.
+
+### Non-negotiable supervision loop
+
+The Gardener must not perform integration or answer the user while children are
+unaccounted for. After every prompt and at each work phase boundary:
+
+1. run `herdr agent list` and compare it with the owned registry;
+2. inspect each owned child with `get` and `read` (including idle children);
+3. classify it as working, reportable, blocked, failed, or protocol-violating;
+4. stop/release/close protocol-violating or abandoned children and record why;
+5. repeat until every owned child is reportable or terminal.
+
+Children are not allowed to use the `task` tool or spawn grandchildren. Start
+delegated agents with a permission policy denying `task`; `subagent_depth` is a
+defense-in-depth setting, not a cleanup substitute. A child-created pane is an
+orphan until it is explicitly added to the registry, reported, and cleaned.
+
+Before the final user-facing response, run both `herdr agent list` and
+`herdr pane layout`. Completion is invalid if any owned child, unknown child
+created during the run remains alive or orphaned. Retained panes are valid when
+their IDs, state, ownership, and reuse/retention reason are recorded. Restore
+the recorded root focus and include final zero-orphans and accounted-layout
+evidence in the report.
 
 ## Integration and verification
 
@@ -235,21 +274,24 @@ Before reporting completion, the Gardener MUST:
    explicitly terminal. Do not send an unrecognised `ctrl-c` token;
 3. once the child is no longer alive, release lifecycle authority when
    required with `herdr pane release-agent <pane_id> --source <source>
-   --agent <label>`, then close the exact owned pane with
-   `herdr pane close <pane_id>`. Pane closure is the final cleanup action and
-   is expected to kill the pane's OpenCode process; it is safe only after the
-   report is collected and the pane ID is confirmed to belong to this run;
-4. verify no orphan agent/process from this run remains and that the original
-   root pane is still focused. Never close a pre-existing pane.
+   --agent <label>`. Preserve the released pane for safe reuse by default.
+   Close a pane only when it is an unassigned shell, unsafe/orphaned,
+   explicitly no longer useful, required to restore the pre-run layout, or
+   explicitly requested by the user. Record the reason for every closure and
+   every intentionally retained pane;
+4. verify no live or orphan agent/process from this run remains and that the
+   layout is accounted for. Restore the recorded root focus. Never close a
+   pre-existing pane.
 
 Use the exact recorded pane IDs and ownership registry for cleanup. Never
 close a pane merely because it is done, and never close a pane or process
 that predates the current run.
 
 If graceful termination fails, inspect the process and escalate only against
-that owned resource. Never kill unrelated processes. If cleanup cannot be
-completed, explicitly report the resource, state, and reason. Intentionally
-retained resources require a clear stated reason.
+that owned resource, using a bounded timeout and only a canonical Herdr
+escalation supported by capability discovery. Never kill unrelated processes.
+If cleanup cannot be completed, explicitly report the resource, state, and
+reason. Intentionally retained resources require a clear stated reason.
 
 ## Worked fan-out example
 
@@ -288,20 +330,20 @@ herdr agent prompt search-tests "Own tests/search/**; may edit only that scope..
 herdr agent list
 herdr agent get search-api
 herdr agent read search-api
-herdr agent wait search-api --until done --timeout 120000
-herdr agent wait search-ui --until done --timeout 120000
-herdr agent wait search-tests --until done --timeout 120000
+# Inspect get/read and classify each child as reportable or terminal; do not
+# use `wait --until done` as proof of completion for interactive children.
 
-# 6. Fan out a read-only follow-up review after integration.
+# 6. Fan out a read-only follow-up review after integration. Reuse a released
+# child pane when available; split only if no suitable pane exists.
 herdr pane split --current --direction right --cwd "$PWD" --no-focus
-# response => pane_id=w7:p5
+# response => pane_id=w7:p5 (only when reuse is unavailable)
 herdr agent start search-review --kind opencode --pane w7:p5 -- --agent specialist --auto
 herdr agent prompt search-review "Read-only review of the integrated search changes against the request; report gaps only."
-herdr agent wait search-review --until done --timeout 120000
+herdr agent get search-review
 herdr agent read search-review
 
-# 7. The Gardener runs final checks, then discovers termination syntax and cleans
-# only p2, p3, p4, and p5 (resources recorded above).
+# 7. The Gardener runs final checks, releases child authority, and retains
+# reusable panes. Close only panes meeting the documented closure criteria.
 herdr agent --help
 herdr pane --help
 herdr agent list
@@ -310,8 +352,8 @@ herdr agent list
 The commands above illustrate fan-out; in a real run, replace placeholder
 flags and lifecycle commands with the syntax actually discovered. The
 Gardener integrates the three reports, addresses review findings, runs final
-verification itself, terminates all four named children, closes only the four
-created panes, and confirms the original pane remains focused.
+verification itself, releases child authority, retains reusable panes, and
+confirms the original pane remains focused.
 
 ## Completion checklist
 
