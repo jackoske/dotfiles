@@ -106,3 +106,15 @@ fi
 
 # Dotfiles bare repo
 alias dotfiles='git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
+
+# Back up tracked config changes without picking up unrelated home-directory files.
+dotfiles-backup() (
+  cd "$HOME" || exit 1
+  dotfiles add --update
+  if dotfiles diff --cached --quiet; then
+    print 'No tracked dotfile changes to back up.'
+    exit 0
+  fi
+  dotfiles diff --cached --stat
+  dotfiles commit -m "Back up config $(date +%F)" && dotfiles push
+)

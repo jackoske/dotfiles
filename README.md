@@ -44,9 +44,18 @@ echo "alias dotfiles='git --git-dir=\$HOME/.dotfiles/ --work-tree=\$HOME'" >> ~/
 
 ## Day-to-day usage
 
+The safe default is one command from any directory. It stages only files that
+are already tracked, so phone backups and other unrelated home-directory files
+are not included:
+
+```bash
+dotfiles-backup
+```
+
+For a new config file, explicitly add it once before running the backup:
+
 ```bash
 dotfiles status
 dotfiles add ~/.config/nvim/somefile.lua
-dotfiles commit -m "update nvim config"
-dotfiles push
+dotfiles-backup
 ```
