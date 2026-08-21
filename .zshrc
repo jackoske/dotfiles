@@ -83,6 +83,7 @@ alias ....='cd ../../..'
 alias bitwig='flatpak run com.bitwig.BitwigStudio'
 # Tools
 alias c='opencode'
+opengod() { OPENCODE_CONFIG="$HOME/.config/opencode/opencode-god.json" command opencode "$@"; }
 alias d='docker'
 alias r='rails'
 n() { if [ "$#" -eq 0 ]; then nvim .; else nvim "$@"; fi; }
