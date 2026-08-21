@@ -6,17 +6,58 @@
   "agent": {
     "explore": {
       "model": "openai/gpt-5.6-luna-fast",
-      "variant": "medium"
+      "variant": "medium",
+      "mode": "all",
+      "permission": {
+        "edit": "deny",
+        "bash": "deny",
+        "question": "deny",
+        "todowrite": "deny",
+        "task": "deny"
+      }
     },
     "scout": {
       "model": "openai/gpt-5.6-luna-fast",
-      "variant": "medium"
+      "variant": "medium",
+      "mode": "all",
+      "permission": {
+        "edit": "deny",
+        "bash": "deny",
+        "question": "deny",
+        "todowrite": "deny",
+        "task": "deny"
+      }
+    },
+    "general": {
+      "mode": "all",
+      "permission": { "task": "deny" }
+    }
+  },
+  "references": {
+    "superpowers": {
+      "repository": "obra/superpowers",
+      "description": "Reference workflow methodology: brainstorm, design approval, bite-sized tasks, review, verification, and cleanup. Adapt concepts; keep Herdr orchestration authoritative."
+    },
+    "addy-agent-skills": {
+      "repository": "addyosmani/agent-skills",
+      "description": "Reference skill patterns for context engineering, source-driven development, planning, verification, review, security, and shipping."
+    },
+    "awesome-opencode": {
+      "repository": "awesome-opencode/awesome-opencode",
+      "description": "Reference catalog for OpenCode configuration and extensibility patterns; verify current compatibility before reuse."
+    },
+    "tanbiralam-claude-code": {
+      "repository": "tanbiralam/claude-code",
+      "description": "Reference Claude Code workflow and configuration patterns for comparison only; do not assume OpenCode compatibility."
+    },
+    "codeaashu-claude-code": {
+      "repository": "codeaashu/claude-code",
+      "description": "Reference Claude Code workflow and configuration patterns for comparison only; do not assume OpenCode compatibility."
     }
   },
   "plugin": [
-    "opencode-usage-monitor@latest",
-    "opencode-simple-notify@latest",
-    "envsitter-guard@latest",
-    "opencode-telemetry@latest"
+    "opencode-usage-monitor@2.0.1",
+    "envsitter-guard@0.0.4",
+    "opencode-telemetry@0.1.19"
   ]
 }

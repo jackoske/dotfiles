@@ -2,6 +2,8 @@
   "$schema": "https://opencode.ai/tui.json",
   "theme": "system",
   "plugin": [
-    "file:///home/phantom/.config/opencode/plugins/usage-monitor/tui.js"
+    "file:///home/phantom/.config/opencode/herdr-tui-session.js",
+    "file:///home/phantom/.config/opencode/plugins/usage-monitor/tui.js",
+    "file:///home/phantom/.config/opencode/tui-plugins/interaction-tui.js"
   ]
 }
