@@ -158,16 +158,39 @@ Return:
 ```
 
 Create and start children without focusing them. Parse each split response and
-retain the returned pane ID; do not infer pane IDs from position:
+retain the returned pane ID; do not infer pane IDs from position.
+
+### Atomic child startup
+
+Do not manually sleep, open OpenCode in the shell, inspect terminal text for a
+prompt, and then type the first request. `herdr agent start` is the startup
+barrier: it launches the requested OpenCode integration in the already-created
+shell pane and waits for the integration to become interactive. Pass the
+initial request to OpenCode with its supported `--prompt` option in that same
+startup invocation. (`-i` is not an installed OpenCode option.) Set a bounded
+`--timeout` when the default is unsuitable. A successful start response (and
+the corresponding structured `herdr agent get`) is sufficient to confirm the
+child started; terminal `read` is not a boot-readiness mechanism.
+
+The startup invocation must select the child role at process start and apply
+the configured `task: deny` policy from boot. Never start a generic OpenCode
+process and retrofit the role or delegation policy afterward:
 
 ```bash
 herdr pane split --current --direction right --cwd "$PWD" --no-focus
-herdr agent start api-review --kind opencode --pane <returned-pane-id> -- --agent specialist --auto
-# Wait until the start response (or `herdr agent get`) reports
-# `interactive_ready:true`; do not prompt a pane that is still booting.
+herdr agent start api-review --kind opencode --pane <returned-pane-id> --timeout 30000 -- --agent specialist --auto --prompt "<specific prompt>"
+# The successful start response is the readiness gate; confirm structured
+# state without a manual pane read or delay.
+herdr agent list
 herdr agent get api-review
-herdr agent prompt api-review "<specific prompt>"
+herdr agent read api-review
 ```
+
+If startup fails or times out, do not type into the pane. Inspect the
+structured agent/pane state, diagnose the failure, and close or retry only the
+owned pane. After the prompt, perform the normal list/get/read supervision
+check; `read` is required there for report preservation or blocker diagnosis,
+not for deciding whether OpenCode has booted.
 
 For multiple children, target the saved IDs explicitly. Do not issue several
 `herdr pane split --current` commands, because the focused pane may be the

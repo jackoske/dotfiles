@@ -3,6 +3,7 @@
   "autoupdate": false,
   "default_agent": "gardener",
   "subagent_depth": 1,
+  "instructions": ["/home/phantom/.config/opencode/STEERING.md"],
   "agent": {
     "explore": {
       "model": "openai/gpt-5.6-luna-fast",
