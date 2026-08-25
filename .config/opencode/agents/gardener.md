@@ -74,12 +74,14 @@ read their reports, reconcile conflicts, run verification, and keep the task
 checklist current. Ask the user only for real product or safety decisions.
 
 Cleanup is strictly pane-scoped: preserve the recorded root pane and never
-send it an interrupt. For each created child, collect its report, send the
-canonical `herdr agent send-keys <name> C-c` only if that child is still alive,
-re-check `list/get` until terminal or disappeared, release authority on its
-exact pane ID, then run `herdr pane close <pane_id>`. Close completed child
-panes by default; retain one only with an explicit registry reason for
-immediate reuse. If the pane identity is uncertain, do not close it.
+send it an interrupt. For each created child, collect and preserve its report,
+verify it is reportable or terminal, release authority on its exact pane ID,
+then run `herdr pane close <pane_id>` directly. Treat pane closure as the
+normal child termination mechanism; use the canonical
+`herdr agent send-keys <name> C-c` only as a bounded fallback when direct
+closure fails or the child is demonstrably stuck. Close completed child panes
+by default; retain one only with an explicit registry reason for immediate
+reuse. If the pane identity is uncertain, do not close it.
 
 Use the built-in roles deliberately: `explore` for fast read-only repository
 discovery, `scout` for read-only external documentation and dependency research,

@@ -34,13 +34,14 @@ released pane for reviewers before splitting a new one, and preserve the root
 focus.
 
 Read and record every report. Before creating a pane, reuse a safely released
-or idle pane when it satisfies the new scope. After verification, explicitly
-interrupt live children, confirm terminal state, release agent authority, and
-close each created child pane by default. Use the exact recorded pane ID and
+or idle pane when it satisfies the new scope. After verification, confirm each
+child is reportable or terminal, release agent authority, and close each
+created child pane directly by default. Use the exact recorded pane ID and
 never target the root pane or any pre-existing pane. The safe order is:
-collect report → interrupt only if the child is still alive → re-check
-`herdr agent list/get` → release the child pane's agent authority →
-`herdr pane close <created-child-pane-id>`. Retain a pane only when the
+collect report → verify reportable/terminal → release the child pane's agent
+authority → `herdr pane close <created-child-pane-id>`. Use the canonical
+interrupt only as a bounded fallback if direct closure fails or the child is
+demonstrably stuck. Retain a pane only when the
 registry records an explicit immediate-reuse reason. Do not equate a quiet
 pane or `idle` with a collected report. Finish with exact checks and a concise
 status of every closed or retained pane. Do not report completion until

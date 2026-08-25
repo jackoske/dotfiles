@@ -263,17 +263,17 @@ terminate children → clean resources → report
 Before reporting completion, the Gardener MUST:
 
 1. retrieve and preserve every child report before termination;
-2. after the report is collected, terminate any child still alive with the
-   canonical interrupt syntax (`herdr agent send-keys <name> C-c`), then
-   re-check `herdr agent get/list` until that named child disappears or is
-   explicitly terminal. Do not send an unrecognised `ctrl-c` token. Never
-   target the root agent or root pane;
-3. once the child is no longer alive, release lifecycle authority with the
-   exact recorded pane ID when required:
+2. after the report is collected, verify the child is reportable or terminal;
+   do not interrupt a normally completing child. Never target the root agent
+   or root pane;
+3. release lifecycle authority with the exact recorded pane ID when required:
    `herdr pane release-agent <pane_id> --source <source> --agent <label>`.
-   For panes created by this run, close the exact child pane by default after
-   release with `herdr pane close <pane_id>`. Do not close the pane while a
-   child is still live, and do not close the root or any pre-existing pane.
+   For panes created by this run, close the exact child pane directly by
+   default with `herdr pane close <pane_id>`. Treat pane closure as the normal
+   termination mechanism. Use the canonical interrupt syntax
+   (`herdr agent send-keys <name> C-c`) only as a bounded fallback if direct
+   closure fails or the child is demonstrably stuck. Do not close the root or
+   any pre-existing pane.
    Retain a released child pane only when the registry records an explicit
    reuse/retention reason. Record the reason for every closure and every
    intentionally retained pane;
