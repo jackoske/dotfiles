@@ -5,6 +5,7 @@
   "subagent_depth": 1,
   "agent": {
     "explore": {
+      "model": "openai/gpt-5.6-luna-fast",
       "variant": "medium",
       "mode": "all",
       "permission": {
@@ -31,6 +32,34 @@
       "model": "openai/gpt-5.6-luna-fast",
       "mode": "all",
       "permission": { "task": "deny" }
+    },
+    "gardener": {
+      "model": "openai/gpt-5.6-luna",
+      "variant": "medium"
+    },
+    "specialist": {
+      "model": "openai/gpt-5.6-luna",
+      "variant": "medium"
+    },
+    "architect": {
+      "model": "openai/gpt-5.6-luna",
+      "variant": "medium"
+    },
+    "spec-reviewer": {
+      "model": "openai/gpt-5.6-luna",
+      "variant": "medium"
+    },
+    "security-auditor": {
+      "model": "openai/gpt-5.6-luna",
+      "variant": "medium"
+    },
+    "test-verifier": {
+      "model": "openai/gpt-5.6-luna",
+      "variant": "medium"
+    },
+    "production-reliability": {
+      "model": "openai/gpt-5.6-luna",
+      "variant": "medium"
     }
   },
   "references": {

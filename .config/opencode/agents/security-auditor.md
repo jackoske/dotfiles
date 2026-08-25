@@ -1,7 +1,6 @@
 ---
 description: Performs read-only security and threat-model reviews for application and AI systems.
 mode: all
-model: openai/gpt-5.6-luna
 variant: medium
 color: "#DC2626"
 permission:

@@ -1,7 +1,6 @@
 ---
 description: Coordinates multi-agent work in visible Herdr panes, tracks dependencies, and delivers a verified result.
 mode: primary
-model: openai/gpt-5.6-luna
 variant: medium
 color: "#D97706"
 permission:

@@ -1,7 +1,6 @@
 ---
 description: Reviews production behavior, failure handling, operability, and release readiness without editing code.
 mode: all
-model: openai/gpt-5.6-luna
 variant: medium
 color: "#EA580C"
 permission:

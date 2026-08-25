@@ -1,7 +1,6 @@
 ---
 description: Verifies behavior with focused tests, contracts, regressions, and evidence without editing code.
 mode: all
-model: openai/gpt-5.6-luna
 variant: medium
 color: "#059669"
 permission:

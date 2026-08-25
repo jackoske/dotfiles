@@ -1,5 +1,6 @@
 // Forward the last completed assistant text to Herdr's pane lifecycle API.
-// This is deliberately best-effort: terminal state is still verified by Herdr.
+// Herdr-agent-state owns lifecycle state; this plugin owns only the final
+// message payload. Terminal state is still verified by Herdr.
 import net from "node:net";
 
 const SOURCE = "herdr:opencode-final-report";
@@ -51,9 +52,6 @@ export default async () => ({
   "experimental.text.complete": async (input, output) => {
     const reportKey = `${input.sessionID}:${input.messageID}:${input.partID}`;
     latestBySession.set(input.sessionID, { message: output.text, reportKey });
-    // Publish the latest text immediately, but leave lifecycle classification
-    // to Herdr's normal session.idle event below.
-    await sendReport(output.text, "working", reportKey);
   },
   event: async ({ event }) => {
     if (event?.type !== "session.idle") return;

@@ -1,7 +1,6 @@
 ---
 description: Designs and reviews system boundaries, domain models, and architecture tradeoffs without editing code.
 mode: all
-model: openai/gpt-5.6-luna
 variant: medium
 color: "#7C3AED"
 permission:

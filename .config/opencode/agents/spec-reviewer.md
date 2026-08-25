@@ -1,7 +1,6 @@
 ---
 description: Performs a read-only first-stage review against the approved specification and acceptance criteria.
 mode: all
-model: openai/gpt-5.6-luna
 variant: medium
 color: "#0EA5E9"
 permission:
