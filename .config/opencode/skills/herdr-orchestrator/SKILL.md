@@ -242,6 +242,19 @@ their IDs, state, ownership, and reuse/retention reason are recorded. Restore
 the recorded root focus and include final zero-orphans and accounted-layout
 evidence in the report.
 
+## Development assets
+
+Use these assets when refining this skill rather than relying on anecdotal
+success:
+
+- `evals/evals.json` — lifecycle scenarios and observable assertions covering
+  reportable, terminal, stuck, orphan, and environment-gate behavior.
+- `scripts/validate_evals.py` — deterministic schema and assertion validation.
+  Run `python3 scripts/validate_evals.py` from this skill directory.
+
+Run each eval with a clean context, compare against a no-skill or prior-version
+baseline, and record objective assertion evidence before changing the skill.
+
 ## Integration and verification
 
 Collect every required report with `read` before integrating. Reconcile

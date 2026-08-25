@@ -1,0 +1,60 @@
+{
+  "skill_name": "herdr-orchestrator",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "A child is idle and its final assistant message is present in the Herdr API snapshot. Determine whether it is reportable and what to do next.",
+      "expected_output": "Classify the child as reportable, preserve the exact message, and proceed through release then direct pane closure without sending C-c.",
+      "assertions": [
+        "Uses the API snapshot or agent get state rather than terminal text to classify the child",
+        "Preserves the final message before cleanup",
+        "Does not send C-c for a normally completing child",
+        "Releases authority before closing the exact child pane"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "A child has disappeared from herdr agent list after reporting. Reconcile the registry and finish cleanup.",
+      "expected_output": "Classify the child as terminal, preserve its report if available, mark it reconciled, and close only its recorded pane if it was created by this run.",
+      "assertions": [
+        "Treats a disappeared child as terminal",
+        "Does not infer completion from a quiet pane",
+        "Uses the recorded pane ID and never targets the root pane",
+        "Records the terminal result and created-resource closure"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Direct herdr pane close fails for a live, stuck child after its report has been preserved. Recover safely.",
+      "expected_output": "Use the canonical named-agent C-c fallback, re-check structured lifecycle state, release authority, and retry exact-pane closure with bounded escalation.",
+      "assertions": [
+        "Uses C-c only because direct closure failed and the child is demonstrably stuck",
+        "Targets the named child rather than the root agent",
+        "Re-checks list/get or the API snapshot after interruption",
+        "Uses bounded escalation and reports any cleanup failure"
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "A terminal snapshot contains an unknown child-created pane that is not in the Gardener registry. What should happen?",
+      "expected_output": "Treat the unknown resource as an orphan/protocol violation, stop normal integration, identify it by exact pane ID, and clean it without touching pre-existing or root panes.",
+      "assertions": [
+        "Detects the unregistered resource as an orphan or protocol violation",
+        "Does not invent a pane ID from layout position",
+        "Protects the recorded root and pre-existing panes",
+        "Records the orphan cleanup outcome"
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "HERDR_ENV is unset while a request asks you to split panes and start children.",
+      "expected_output": "Refuse Herdr pane manipulation, explain that the session is not Herdr-managed, and continue only with safe root-pane work or ask for a managed session.",
+      "assertions": [
+        "Checks HERDR_ENV before controlling Herdr",
+        "Does not split panes or start children when the gate fails",
+        "Explains the environment blocker concisely",
+        "Does not claim that delegation occurred"
+      ]
+    }
+  ]
+}
