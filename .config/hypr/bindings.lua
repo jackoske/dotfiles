@@ -1,6 +1,13 @@
 -- Application bindings
 -- These keys are already bound by Omarchy defaults; unbind before rebinding
 -- so the dispatcher does not fire twice.
+-- Put the apps launcher on the simpler shortcut and the root menu on the
+-- modified shortcut.
+hl.unbind("SUPER + SPACE")
+o.bind("SUPER + SPACE", "Apps menu", "omarchy-menu toggle apps")
+hl.unbind("SUPER + ALT + SPACE")
+o.bind("SUPER + ALT + SPACE", "Omarchy menu", "omarchy-menu toggle root")
+
 hl.unbind("SUPER + ALT + RETURN")
 o.bind("SUPER + ALT + RETURN", "Tmux", "uwsm-app -- xdg-terminal-exec --dir=\"$(omarchy-cmd-terminal-cwd)\" tmux new")
 hl.unbind("SUPER + RETURN")
@@ -58,8 +65,10 @@ o.bind("SUPER + SHIFT + ALT + X", "X Post", "omarchy-launch-webapp \"https://x.c
 o.bind("F13", nil, "asusctl led-mode next")
 
 hl.unbind("SUPER + W")
-o.bind("SUPER + E", nil, "nautilus")
+hl.unbind("SUPER + E")
+o.bind("SUPER + E", nil, "uwsm-app -- nautilus")
 o.bind("SUPER + D", "Toggle floating", hl.dsp.window.float({ action = "toggle" }))
+hl.unbind("SUPER + Q")
 o.bind("SUPER + Q", nil, hl.dsp.window.close())
 o.bind("SUPER + W", "Browser", "omarchy-launch-browser")
 o.bind("SUPER + ALT + W", "Next wallpaper", "omarchy-theme-bg-next")

@@ -1,14 +1,30 @@
 {
-  "version": 1,
-  "idle": {
-    "screensaver": 150,
-    "lock": 300
-  },
   "bar": {
-    "position": "top",
-    "transparent": true,
-    "centerAnchor": "phantom.clock",
+    "centerAnchor": "omarchy.clock",
     "layout": {
+      "center": [
+        {
+          "id": "omarchy.indicators"
+        },
+        {
+          "format": "dddd HH:mm",
+          "formatAlt": "d MMMM 'W'ww yyyy",
+          "id": "omarchy.clock",
+          "verticalFormat": "HH\n—\nmm"
+        },
+        {
+          "id": "omarchy.keyboard-layout"
+        },
+        {
+          "id": "omarchy.weather"
+        },
+        {
+          "id": "phantom.audio"
+        },
+        {
+          "id": "omarchy.system-update"
+        }
+      ],
       "left": [
         {
           "id": "phantom.menu"
@@ -17,35 +33,15 @@
           "id": "omarchy.workspaces"
         }
       ],
-      "center": [
-        {
-          "id": "phantom.clock",
-          "format": "HH:mm",
-          "formatAlt": "HH:mm",
-          "verticalFormat": "HH\n—\nmm"
-        },
-        {
-          "id": "omarchy.indicators"
-        },
-        {
-          "id": "omarchy.system-update"
-        },
-        {
-          "id": "omarchy.keyboard-layout"
-        },
-        {
-          "id": "omarchy.weather"
-        }
-      ],
       "right": [
         {
           "id": "omarchy.tray"
         },
         {
-          "id": "omarchy.agents"
+          "id": "omarchy.tailscale"
         },
         {
-          "id": "omarchy.microphone"
+          "id": "omarchy.agents"
         },
         {
           "id": "omarchy.bluetooth"
@@ -54,31 +50,27 @@
           "id": "omarchy.network"
         },
         {
-          "id": "phantom.audio"
-        },
-        {
           "id": "omarchy.monitor"
         },
         {
-          "id": "phantom.nordvpn"
-        },
-        {
-          "id": "phantom.cpu"
-        },
-        {
-          "id": "omarchy.power",
-          "settings": {
-            "showPercentage": true
-          }
+          "id": "omarchy.power"
         }
       ]
-    }
+    },
+    "position": "top",
+    "transparent": true
   },
-  "plugins": [],
-  "disabledPlugins": [
-    "omarchy.menu"
-  ],
   "cloneSourceRestores": [
     "phantom.menu"
-  ]
+  ],
+  "disabledPlugins": [
+    "phantom.network",
+    "omarchy.menu"
+  ],
+  "idle": {
+    "lock": 300,
+    "screensaver": 150
+  },
+  "plugins": [],
+  "version": 1
 }
