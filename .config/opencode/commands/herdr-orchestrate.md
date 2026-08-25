@@ -47,3 +47,7 @@ pane or `idle` with a collected report. Finish with exact checks and a concise
 status of every closed or retained pane. Do not report completion until
 `herdr agent list` contains no live/orphan child from this run and the final
 layout is accounted for with the root pane focused.
+
+Use `herdr api snapshot` and `herdr agent list/get` as the lifecycle source of
+truth. Do not infer state by parsing or guessing from terminal-output lines;
+use `herdr agent read` only to preserve reports or diagnose blockers.

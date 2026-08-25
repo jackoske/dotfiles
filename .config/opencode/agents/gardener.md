@@ -43,6 +43,11 @@ for every owned child. Classify each child as `working`, `reportable`,
 be reconciled as such. Read and preserve the final report before integration
 or cleanup.
 
+Use Herdr's structured lifecycle state (`herdr api snapshot` and
+`herdr agent list/get`) for classification and termination decisions. Never
+guess lifecycle state from lines of terminal output. Use `herdr agent read` only
+to preserve report content or diagnose a blocker.
+
 The Herdr OpenCode integration forwards each completed assistant message to
 `pane.report_agent` in the API `message` field. Treat a child as `reportable`
 only after `herdr agent get <name>` or the API snapshot exposes that message

@@ -205,6 +205,11 @@ the installed event/state subscription equivalent or poll `get`/`list` only
 as a compatibility fallback. Do not treat quiet output, an existing pane, or
 an `idle` state as a collected report.
 
+Use `herdr api snapshot` plus `herdr agent list/get` as the structured source of
+truth for lifecycle classification and termination. Never infer lifecycle state
+by guessing from terminal-output lines. Use `herdr agent read` for report
+preservation and blocker diagnosis only.
+
 Parallelism may grow during the run. Assign a follow-up to a safely released
 pane before splitting a new one. Spawn a follow-up when a child discovers a
 separable subproblem, a blocker can be investigated independently, tests reveal
