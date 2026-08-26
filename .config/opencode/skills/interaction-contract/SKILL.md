@@ -1,5 +1,5 @@
 ---
-name: interaction
+name: interaction-contract
 description: Define native question, approval, todo, progress, checkpoint, and handoff behavior for supervised OpenCode work.
 ---
 
