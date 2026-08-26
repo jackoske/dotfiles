@@ -1,5 +1,5 @@
 ---
-name: verification-before-completion
+name: completion-check
 description: Use before claiming a task is complete to verify behavior, scope, quality, and cleanup with fresh evidence.
 ---
 

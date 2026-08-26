@@ -1,5 +1,5 @@
 ---
-name: architecture-principles
+name: architecture
 description: Apply compact, practical architecture principles for design, refactoring, and review.
 license: MIT
 compatibility: opencode

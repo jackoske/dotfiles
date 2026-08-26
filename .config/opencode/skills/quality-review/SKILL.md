@@ -1,5 +1,5 @@
 ---
-name: code-review-quality
+name: quality-review
 description: Use for a two-stage review of a change: first spec compliance, then maintainability, safety, and repository standards.
 ---
 

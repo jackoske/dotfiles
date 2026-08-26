@@ -1,5 +1,5 @@
 ---
-name: engineering-workflow
+name: workflow
 description: Run a disciplined plan-build-verify workflow with small changes, evidence, and explicit risk review.
 license: MIT
 compatibility: opencode

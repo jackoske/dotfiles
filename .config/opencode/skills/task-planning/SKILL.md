@@ -1,5 +1,5 @@
 ---
-name: planning-task-breakdown
+name: task-planning
 description: Use before implementation to turn an approved design into dependency-aware, bite-sized tasks with explicit ownership and verification.
 ---
 

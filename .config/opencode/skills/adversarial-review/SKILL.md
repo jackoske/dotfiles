@@ -1,5 +1,5 @@
 ---
-name: doubt-driven-review
+name: adversarial-review
 description: Use after a design or implementation to force a fresh adversarial review of assumptions, edge cases, and failure modes.
 ---
 

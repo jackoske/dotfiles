@@ -1,5 +1,5 @@
 ---
-name: source-driven-development
+name: source-verification
 description: Use when behavior depends on a framework, provider, API, tool, or version-sensitive fact; verify it from current primary sources before coding.
 ---
 
