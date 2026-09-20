@@ -12,6 +12,9 @@ Completion is a claim requiring evidence, not a feeling.
 - Inspect the final diff/status for accidental files, secrets, and ownership conflicts.
 - Perform a spec-compliance review, then an independent code-quality/security review.
 - Exercise failure paths and document environment-dependent checks.
+- Use fresh evidence for the completion claim; when a flow record exists, append
+  that evidence to `.opencode/flow/<slug>/evidence.md`. Read-only reviewers report
+  evidence to the Gardener; they never write the record themselves.
 - Confirm delegated reports were collected and owned panes/agents were cleaned up.
 
 Report exact commands, outcomes, known gaps, and residual risks.

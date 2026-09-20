@@ -14,10 +14,15 @@ Produce tasks small enough for one focused turn:
 - exact files or subsystem boundaries;
 - dependencies and non-goals;
 - red/green or other verification evidence;
-- integration and rollback notes.
+- integration and rollback notes;
+- when continuity is valuable, name the durable `.opencode/flow/<slug>/` goal,
+  plan, and evidence artifacts that will carry the work across turns.
 
-Keep Herdr as the only coordinator. Parallelize only independent scopes, use a
-fresh child for each task, and serialize shared-file edits.
+Keep Herdr as the only coordinator; do not mix Herdr orchestration with the
+built-in `task` mechanism. Route work by semantic role: Scout handles current
+external facts, Explore local discovery, Architect design, General broad
+investigation, Specialists narrow writes, and Reviewers read-only review.
+Serialize shared-file edits.
 
 When approval or a product choice is needed, use the native `question` tool so
 the user gets an interactive menu with selectable options and a custom-answer
