@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "id": "phantom.gengar",
+  "name": "Gengar menu button",
+  "version": "1.0.0",
+  "author": "Phantom",
+  "description": "Animated Gengar button for the Omarchy menu",
+  "kinds": [
+    "bar-widget"
+  ],
+  "keepLoaded": true,
+  "entryPoints": {
+    "barWidget": "BarWidget.qml"
+  },
+  "barWidget": {
+    "displayName": "Gengar menu button",
+    "description": "Opens the Omarchy menu",
+    "category": "Compositor",
+    "allowMultiple": false
+  }
+}

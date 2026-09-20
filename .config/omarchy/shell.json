@@ -19,15 +19,15 @@
           "id": "omarchy.weather"
         },
         {
-          "id": "phantom.audio"
+          "id": "omarchy.system-update"
         },
         {
-          "id": "omarchy.system-update"
+          "id": "phantom.audio"
         }
       ],
       "left": [
         {
-          "id": "phantom.menu"
+          "id": "phantom.gengar"
         },
         {
           "id": "omarchy.workspaces"
@@ -50,6 +50,9 @@
           "id": "omarchy.network"
         },
         {
+          "id": "phantom.nordvpn"
+        },
+        {
           "id": "omarchy.monitor"
         },
         {
@@ -60,17 +63,17 @@
     "position": "top",
     "transparent": true
   },
-  "cloneSourceRestores": [
-    "phantom.menu"
-  ],
   "disabledPlugins": [
-    "phantom.network",
-    "omarchy.menu"
+    "phantom.network"
   ],
   "idle": {
     "lock": 300,
     "screensaver": 150
   },
-  "plugins": [],
+  "plugins": [
+    {
+      "id": "omarchy.menu"
+    }
+  ],
   "version": 1
 }
